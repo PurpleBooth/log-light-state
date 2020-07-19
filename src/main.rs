@@ -41,24 +41,24 @@ struct WeatherDescription {
 
 #[derive(Debug, Deserialize, Serialize, Copy, Clone)]
 struct WeatherWind {
-    deg: i64,
-    speed: f64,
+    deg: Option<i64>,
+    speed: Option<f64>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Copy, Clone)]
 struct WeatherRain {
     #[serde(rename(serialize = "1h"))]
-    one_h: i64,
+    one_h: Option<i64>,
     #[serde(rename(serialize = "3h"))]
-    three_h: i64,
+    three_h: Option<i64>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Copy, Clone)]
 struct WeatherSnow {
     #[serde(rename(serialize = "1h"))]
-    one_h: i64,
+    one_h: Option<i64>,
     #[serde(rename(serialize = "3h"))]
-    three_h: i64,
+    three_h: Option<i64>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -285,12 +285,12 @@ fn output_lights(
             weather_visibility: weather.visibility,
             weather_weather_0_id: weather.weather.get(0).map(|x| x.id),
             weather_clouds_all: weather.clouds.map(|x| x.all),
-            weather_wind_deg: weather.wind.map(|x| x.deg),
-            weather_wind_speed: weather.wind.map(|x| x.speed),
-            weather_rain_1h: weather.rain.map(|x| x.one_h),
-            weather_rain_3h: weather.rain.map(|x| x.three_h),
-            weather_snow_1h: weather.snow.map(|x| x.one_h),
-            weather_snow_3h: weather.snow.map(|x| x.three_h),
+            weather_wind_deg: weather.wind.and_then(|x| x.deg),
+            weather_wind_speed: weather.wind.and_then(|x| x.speed),
+            weather_rain_1h: weather.rain.and_then(|x| x.one_h),
+            weather_rain_3h: weather.rain.and_then(|x| x.three_h),
+            weather_snow_1h: weather.snow.and_then(|x| x.one_h),
+            weather_snow_3h: weather.snow.and_then(|x| x.three_h),
             light_name: light.light.name.clone(),
             light_modelid: light.light.modelid.clone(),
             light_swversion: light.light.swversion.clone(),
