@@ -297,7 +297,7 @@ fn output_lights(
             light_state_ct: light.light.state.ct,
             light_state_xy_0: light.light.state.xy.map(|x| x.0),
             light_state_xy_1: light.light.state.xy.map(|x| x.1),
-            id: 0,
+            id: light.id,
             daylight,
         })?;
         file_writer.flush()?;
