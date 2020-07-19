@@ -62,7 +62,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         "light.state.xy.1",
     ];
 
-    if is_stdout || !path.is_file() {
+    if is_stdout || !path.is_file() || path.metadata()?.len() == 0 {
         csv_writer.write_record(headers)?;
         csv_writer.flush()?;
     }
