@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .arg(
             Arg::with_name("output")
                 .required(false)
-                .help("Where to write the CSV to. Put - for stdout")
+                .help("Where to write the CSV to")
                 .default_value("/dev/stdout"),
         )
         .get_matches();
