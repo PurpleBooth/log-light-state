@@ -6,6 +6,10 @@ authors = [ "Billie Thompson <billie+git-mit@billiecodes.com>" ]
 license = "Creative Commons Zero v1.0 Universal"
 categories = [ "development-tools", "command-line-utilities" ]
 keywords = [ "ai", "neural-networks" ]
+readme = "README.md"
+homepage = "https://github.com/PurpleBooth/log-light-state"
+repository = "git@github.com:PurpleBooth/log-light-state.git"
+description = "log-light-state is a tool to generate a CSV of all your hue light states every minuit. The intention is that you'd use that log for training neural networks and similar."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

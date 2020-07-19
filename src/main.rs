@@ -67,23 +67,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         csv_writer.flush()?;
     }
 
-    let bar = if is_stdout {
+    let progress = if is_stdout {
         ProgressBar::hidden()
     } else {
         ProgressBar::new_spinner()
     };
 
-    bar.set_style(ProgressStyle::default_bar().template("{spinner} {elapsed_precise} {msg}"));
-    bar.set_message("Starting event loop");
-    bar.tick();
+    progress.set_style(ProgressStyle::default_bar().template("{spinner} {elapsed_precise} {msg}"));
+    progress.set_message("Starting event loop");
+    progress.tick();
 
     for i in 0.. {
         if i % 60 == 0 {
-            output_lights(&mut csv_writer, &bridge, &bar)?;
+            output_lights(&mut csv_writer, &bridge, &progress)?;
         }
 
-        bar.set_message(&format!("Sleeping for {} sec", 60));
-        bar.tick();
+        progress.set_message(&format!("Sleeping for {} sec", 60));
+        progress.tick();
         thread::sleep(time::Duration::from_secs(1));
     }
 
@@ -93,17 +93,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn output_lights(
     file_writer: &mut Writer<File>,
     bridge: &Bridge,
-    bar: &ProgressBar,
+    progress: &ProgressBar,
 ) -> Result<(), Box<dyn Error>> {
-    bar.set_message("Polling hub");
-    bar.tick();
+    progress.set_message("Polling hub");
+    progress.tick();
 
     for light in &bridge.get_all_lights().unwrap() {
-        bar.set_message(&format!(
+        progress.set_message(&format!(
             "Reading light {} ({})",
             &light.light.name, &light.id
         ));
-        bar.tick();
+        progress.tick();
 
         let row = &[
             &Local::now().to_rfc3339(),
