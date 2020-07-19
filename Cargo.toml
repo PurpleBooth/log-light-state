@@ -1,6 +1,6 @@
 [package]
 name = "log-light-state"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = [ "Billie Thompson <billie+git-mit@billiecodes.com>" ]
 license = "Creative Commons Zero v1.0 Universal"
@@ -10,8 +10,6 @@ readme = "README.md"
 homepage = "https://github.com/PurpleBooth/log-light-state"
 repository = "git@github.com:PurpleBooth/log-light-state.git"
 description = "log-light-state is a tool to generate a CSV of all your hue light states every minuit. The intention is that you'd use that log for training neural networks and similar."
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 hueclient = "0.3.8"
