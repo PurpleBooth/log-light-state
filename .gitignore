@@ -1,0 +1,6 @@
+/target
+*/target/
+/version/version
+/*-x86_64-*
+.idea
+*.csv
