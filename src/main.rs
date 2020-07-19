@@ -102,6 +102,8 @@ struct OutputRow {
     light_state_xy_1: Option<f32>,
     id: usize,
     daylight: bool,
+    lat: f64,
+    long: f64,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -299,6 +301,8 @@ fn output_lights(
             light_state_xy_1: light.light.state.xy.map(|x| x.1),
             id: light.id,
             daylight,
+            lat,
+            long: lon,
         })?;
         file_writer.flush()?;
     }
