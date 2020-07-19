@@ -17,6 +17,7 @@ use csv::Writer;
 use hueclient::bridge::Bridge;
 use indicatif::{ProgressBar, ProgressStyle};
 use spa::{calc_sunrise_and_set, SunriseAndSet};
+use url::Url;
 
 #[derive(Debug, Deserialize, Serialize, Copy, Clone)]
 struct WeatherClouds {
@@ -256,10 +257,14 @@ fn output_lights(
         SunriseAndSet::Daylight(rise, set) => rise <= Utc::now() && Utc::now() <= set,
     };
 
-    let weather: WeatherResponse = reqwest::blocking::get(&format!(
-        "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}",
-        lat, lon, openweather_api_key
-    ))?
+    let weather: WeatherResponse = reqwest::blocking::get(Url::parse_with_params(
+        "https://api.openweathermap.org/data/2.5/weather",
+        &[
+            ("lat", lat.to_string()),
+            ("lon", lon.to_string()),
+            ("appid", openweather_api_key.to_string()),
+        ],
+    )?)?
     .json()?;
 
     for light in &bridge.get_all_lights().unwrap() {
