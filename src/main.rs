@@ -255,8 +255,8 @@ fn output_lights(
         SunriseAndSet::PolarNight => false,
         SunriseAndSet::PolarDay => true,
         SunriseAndSet::Daylight(rise, set) => {
-            Local.from_utc_datetime(&rise.naive_local()) <= Local::now()
-                && Local::now() <= Local.from_utc_datetime(&set.naive_local())
+            Local.from_utc_datetime(&rise.naive_local()).time() <= Local::now().time()
+                && Local::now().time() <= Local.from_utc_datetime(&set.naive_local()).time()
         }
     };
 
