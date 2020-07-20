@@ -254,7 +254,10 @@ fn output_lights(
     let daylight = match calc_sunrise_and_set(Utc::now(), lat, lon)? {
         SunriseAndSet::PolarNight => false,
         SunriseAndSet::PolarDay => true,
-        SunriseAndSet::Daylight(rise, set) => rise <= Utc::now() && Utc::now() <= set,
+        SunriseAndSet::Daylight(rise, set) => {
+            Local.from_utc_datetime(&rise.naive_local()) <= Local::now()
+                && Local::now() <= Local.from_utc_datetime(&set.naive_local())
+        }
     };
 
     let weather: WeatherResponse = reqwest::blocking::get(Url::parse_with_params(
