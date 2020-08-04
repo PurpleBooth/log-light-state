@@ -401,9 +401,9 @@ checksum = "cd179ae861f0c2e53da70d892f5f3029f9594be0c41dc5269cd371691b1dc2f9"
 
 [[package]]
 name = "hueclient"
-version = "0.3.8"
+version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d374f85ed337b397c42948cf905f622dd6b10e8d7a9df915a8180ab6a540819a"
+checksum = "b7eb682072010910df5b2de2e742298e9592a96afd490dfdbf6c6b909d59d12a"
 dependencies = [
  "error-chain",
  "regex",
@@ -411,6 +411,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "ssdp-probe",
 ]
 
 [[package]]
@@ -1033,6 +1034,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "ssdp-probe"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05070d995eed410cbaad735eb981a0e99ee5420d89fb2a13e963e4d32c11a393"
+dependencies = [
+ "log",
+ "socket2",
+ "thiserror",
+]
+
+[[package]]
 name = "strsim"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1089,6 +1101,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dfdd070ccd8ccb78f4ad66bf1982dc37f620ef696c6b5028fe2ed83dd3d0d08"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd80fc12f73063ac132ac92aceea36734f04a1d93c1240c6944e23a3b8841793"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
