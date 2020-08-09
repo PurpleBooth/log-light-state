@@ -556,6 +556,7 @@ dependencies = [
  "indicatif",
  "reqwest",
  "serde",
+ "serde_derive",
  "serde_json",
  "spa",
  "url",
