@@ -1,6 +1,6 @@
 [package]
 name = "log-light-state"
-version = "1.0.12"
+version = "1.0.13"
 edition = "2018"
 authors = [ "Billie Thompson <billie+git-mit@billiecodes.com>" ]
 license = "Creative Commons Zero v1.0 Universal"
