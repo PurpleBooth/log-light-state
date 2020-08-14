@@ -46,6 +46,12 @@ jobs:
       - shell: bash
         name: Open a PR on the custom tap repository
         run: |
+          gpg --import-ownertrust <(echo "$SIGNING_KEY_PUB")
+          gpg --import-ownertrust <(echo "$SIGNING_KEY_PRIV")
+          KEY_ID=$(gpg --list-keys "PurpleBooth@users.noreply.github.com" | grep pub | grep -o -P '(?<=/)[A-Z0-9]{8}')
+          gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
+          git config commit.gpgsign true
+          git config tag.gpgSign true
           VERSION="$(echo $GIT_TAG | sed 's/^refs\/tags\///')"
           git -C homebrew-repo switch -c "$REPOSITORY_NAME-$VERSION"
           cp formula.rb "homebrew-repo/Formula/$REPOSITORY_NAME.rb"
@@ -53,6 +59,9 @@ jobs:
           git -C homebrew-repo commit -m "fix: Update $REPOSITORY_NAME to $VERSION"
           (cd homebrew-repo && gh pr create --label bottles --base main --fill)
         env:
+          SIGNING_KEY_PUB: ${{ secrets.SIGNING_KEY_PUB }}
+          SIGNING_KEY_PRIV: ${{ secrets.SIGNING_KEY_PRIV }}
+          SIGNING_KEY_PASS: ${{ secrets.SIGNING_KEY_PASS }}
           REPOSITORY_NAME: ${{ steps.get_repository_name.outputs.REPOSITORY_NAME }}
           GIT_TAG: ${{ github.ref }}
           FORMULA_LOCATION: homebrew-repo/Formula/${{ steps.get_repository_name.outputs.REPOSITORY_NAME }}.rb
