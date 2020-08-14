@@ -185,7 +185,16 @@ jobs:
       - shell: bash
         env:
           GITHUB_ACTOR: ${{ github.actor }}
+          SIGNING_KEY_PUB: ${{ secrets.SIGNING_KEY_PUB }}
+          SIGNING_KEY_PRIV: ${{ secrets.SIGNING_KEY_PRIV }}
+          SIGNING_KEY_PASS: ${{ secrets.SIGNING_KEY_PASS }}
         run: |
+          gpg --import-ownertrust <(echo "$SIGNING_KEY_PUB")
+          gpg --import-ownertrust <(echo "$SIGNING_KEY_PRIV")
+          KEY_ID=$(gpg --list-keys "PurpleBooth@users.noreply.github.com" | grep pub | grep -o -P '(?<=/)[A-Z0-9]{8}')
+          gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
+          git config commit.gpgsign true
+          git config tag.gpgSign true
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git commit -am "fix: Update cargo package version to $(cat ./version/version)"
