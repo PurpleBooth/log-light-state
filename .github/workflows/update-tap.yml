@@ -43,13 +43,15 @@ jobs:
             git_tag=${{ github.ref }}
             file_sha=${{ steps.hash.outputs.SHA256 }}
         name: Generate the template
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v2
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.SIGNING_KEY_PRIV }}
+          PASSPHRASE: ${{ secrets.SIGNING_KEY_PASS }}
       - shell: bash
         name: Open a PR on the custom tap repository
         run: |
-          gpg --import <(echo "$SIGNING_KEY_PUB")
-          gpg --import <(echo "$SIGNING_KEY_PRIV")
-          KEY_ID=$(gpg --list-keys "PurpleBooth@users.noreply.github.com" | grep pub | grep -o -P '(?<=/)[A-Z0-9]{8}')
-          gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
           git config commit.gpgsign true
           git config tag.gpgSign true
           VERSION="$(echo $GIT_TAG | sed 's/^refs\/tags\///')"
@@ -59,9 +61,6 @@ jobs:
           git -C homebrew-repo commit -m "fix: Update $REPOSITORY_NAME to $VERSION"
           (cd homebrew-repo && gh pr create --label bottles --base main --fill)
         env:
-          SIGNING_KEY_PUB: ${{ secrets.SIGNING_KEY_PUB }}
-          SIGNING_KEY_PRIV: ${{ secrets.SIGNING_KEY_PRIV }}
-          SIGNING_KEY_PASS: ${{ secrets.SIGNING_KEY_PASS }}
           REPOSITORY_NAME: ${{ steps.get_repository_name.outputs.REPOSITORY_NAME }}
           GIT_TAG: ${{ github.ref }}
           FORMULA_LOCATION: homebrew-repo/Formula/${{ steps.get_repository_name.outputs.REPOSITORY_NAME }}.rb
