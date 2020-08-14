@@ -189,8 +189,8 @@ jobs:
           SIGNING_KEY_PRIV: ${{ secrets.SIGNING_KEY_PRIV }}
           SIGNING_KEY_PASS: ${{ secrets.SIGNING_KEY_PASS }}
         run: |
-          gpg --import <(echo "$SIGNING_KEY_PUB")
-          gpg --import <(echo "$SIGNING_KEY_PRIV")
+          echo "$SIGNING_KEY_PUB" | gpg --batch --import
+          echo "$SIGNING_KEY_PRIV" | gpg --batch --import
           KEY_ID=$(gpg --list-keys "PurpleBooth@users.noreply.github.com" | grep pub | grep -o -P '(?<=/)[A-Z0-9]{8}')
           gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
           git config commit.gpgsign true
