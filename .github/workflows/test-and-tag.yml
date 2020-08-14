@@ -192,7 +192,8 @@ jobs:
           echo "$SIGNING_KEY_PUB" | gpg --batch --import
           echo "$SIGNING_KEY_PRIV" | gpg --batch --import
           KEY_ID=$(echo "$SIGNING_KEY_PUB" | gpg --batch --import --import-options show-only | sed -n 2p | tr -d '[:space:]')
-          gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
+          ## This stupid thing is all over the place on different environments
+          "$(find /usr -name "gpg-preset-passphrase" -print -quit)" --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
           git config commit.gpgsign true
           git config tag.gpgSign true
           git config user.name "$GITHUB_ACTOR"
