@@ -46,8 +46,8 @@ jobs:
       - shell: bash
         name: Open a PR on the custom tap repository
         run: |
-          gpg --import-ownertrust <(echo "$SIGNING_KEY_PUB")
-          gpg --import-ownertrust <(echo "$SIGNING_KEY_PRIV")
+          gpg --import <(echo "$SIGNING_KEY_PUB")
+          gpg --import <(echo "$SIGNING_KEY_PRIV")
           KEY_ID=$(gpg --list-keys "PurpleBooth@users.noreply.github.com" | grep pub | grep -o -P '(?<=/)[A-Z0-9]{8}')
           gpg-preset-passphrase --preset --passphrase "$SIGNING_KEY_PASS" "$KEY_ID"
           git config commit.gpgsign true
