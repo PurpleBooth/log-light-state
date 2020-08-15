@@ -32,7 +32,7 @@ jobs:
         name: Generate the template
       - uses: actions/upload-artifact@v2
         with:
-          name: formula
+          name: new-formula
           path: ./formula.rb
         name: Store the formula
   build:
@@ -68,7 +68,7 @@ jobs:
         run: |
           VERSION="$(echo $GIT_TAG | sed 's/^refs\/tags\///')"
           git switch -c "$REPOSITORY_NAME-$VERSION"
-          mv formula.rb "Formula/$REPOSITORY_NAME.rb"
+          mv new-formula/formula.rb "Formula/$REPOSITORY_NAME.rb"
           git add "Formula/$REPOSITORY_NAME.rb"
           git commit -m "fix: Update $REPOSITORY_NAME to $VERSION"
           gh pr create --label bottles --base main --fill
