@@ -20,11 +20,6 @@ jobs:
             ~/.cargo/git
             ~/.cargo/bin
             target
-      - uses: actions-rs/toolchain@v1
-        with:
-          default: true
-          profile: minimal
-          toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
           args: "--release"
@@ -65,11 +60,6 @@ jobs:
             ~/.cargo/bin
             target
       - uses: actions/download-artifact@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          default: true
-          profile: minimal
-          toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
           command: install

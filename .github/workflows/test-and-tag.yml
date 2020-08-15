@@ -22,11 +22,6 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
       - uses: actions/checkout@v2.3.2
         with:
           fetch-depth: 0
@@ -76,11 +71,6 @@ jobs:
             ~/.cargo/bin
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
       - uses: actions-rs/cargo@v1
         with:
           command: check
@@ -106,11 +96,6 @@ jobs:
             ~/.cargo/bin
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
       - uses: actions-rs/cargo@v1
         with:
           command: test
@@ -126,12 +111,6 @@ jobs:
             ~/.cargo/bin
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
-          components: "rustfmt, clippy"
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
