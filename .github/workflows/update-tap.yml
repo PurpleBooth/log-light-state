@@ -46,14 +46,17 @@ jobs:
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v2
+        with:
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: true
         env:
           GPG_PRIVATE_KEY: ${{ secrets.SIGNING_KEY_PRIV }}
           PASSPHRASE: ${{ secrets.SIGNING_KEY_PASS }}
       - shell: bash
         name: Open a PR on the custom tap repository
         run: |
-          git config commit.gpgsign true
-          git config tag.gpgSign true
           VERSION="$(echo $GIT_TAG | sed 's/^refs\/tags\///')"
           git -C homebrew-repo switch -c "$REPOSITORY_NAME-$VERSION"
           cp formula.rb "homebrew-repo/Formula/$REPOSITORY_NAME.rb"
