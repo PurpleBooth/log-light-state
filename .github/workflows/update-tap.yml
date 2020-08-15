@@ -78,8 +78,3 @@ jobs:
           FORMULA_LOCATION: homebrew-repo/Formula/${{ steps.get_repository_name.outputs.REPOSITORY_NAME }}.rb
           GH_USERNAME: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
-          EMAIL: ${{ github.actor }}@users.noreply.github.com
-          GIT_AUTHOR_NAME: ${{ github.actor }}
-          GIT_AUTHOR_EMAIL: ${{ github.actor }}@users.noreply.github.com
-          GIT_COMMITTER_NAME: ${{ github.actor }}
-          GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
