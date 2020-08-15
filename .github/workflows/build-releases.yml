@@ -27,7 +27,7 @@ jobs:
           toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
-          args: "--release --locked"
+          args: "--release"
           command: build
       - id: get_repository_name
         run: 'echo ::set-output name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / ''{print $2}'' | sed -e "s/:refs//")'
