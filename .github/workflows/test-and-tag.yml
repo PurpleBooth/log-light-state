@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -17,15 +19,18 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/audit-check@v1
+        name: Audit cargo packages
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
   version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
         with:
           fetch-depth: 0
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -34,28 +39,35 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: git fetch origin +refs/tags/*:refs/tags/*
+        name: Fetch tags
       - id: get_previous_version
+        name: Calculate previous version
         run: echo ::set-output name=PREVIOUS_VERSION::$(git tag | sort --version-sort | tail -n 1)
         shell: bash
       - id: get_last_common_commit
+        name: Calculate last commit in common with the previous tag
         run: echo ::set-output name=LAST_COMMON_COMMIT::$(git merge-base "$THIS" "$PREVIOUS_VERSION")
         shell: bash
         env:
           PREVIOUS_VERSION: "${{ steps.get_previous_version.outputs.PREVIOUS_VERSION }}"
           THIS: "${{ github.sha }}"
       - uses: actions-rs/cargo@v1
+        name: Install next version calculator
         with:
           command: install
           args: what-bump --force
       - run: mkdir -p ./version
+        name: Create version directory
       - run: |
           what-bump "${LAST_COMMON_COMMIT}" --from "${PREVIOUS_VERSION:1}" > ./version/no_prefix_version
           echo "v" > ./version/prefix
           cat ./version/prefix ./version/no_prefix_version | tr  -d '\n' > ./version/version
+        name: Calculate what version is next
         env:
           PREVIOUS_VERSION: "${{ steps.get_previous_version.outputs.PREVIOUS_VERSION }}"
           LAST_COMMON_COMMIT: "${{ steps.get_last_common_commit.outputs.LAST_COMMON_COMMIT }}"
       - uses: actions/upload-artifact@v2
+        name: Store next version
         with:
           name: version
           path: ./version/version
@@ -63,7 +75,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -72,6 +86,7 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/cargo@v1
+        name: Check a local package and all of its dependencies for errors
         with:
           command: check
   test:
@@ -85,10 +100,13 @@ jobs:
             install: sudo apt-get install -y libxcb-shape0-dev libxcb-xfixes0-dev
     steps:
       - run: ${{ matrix.install }}
+        name: Install dependencies
         env:
           DEBIAN_FRONTEND: noninteractive
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -97,13 +115,16 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/cargo@v1
+        name: Execute all unit and integration tests and build examples
         with:
           command: test
   lints:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -112,17 +133,18 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/cargo@v1
+        name: Check formatting of rust
         with:
           command: fmt
           args: "--all -- --check"
       - uses: actions-rs/cargo@v1
+        name: Check code with clippy
         with:
           command: clippy
           args: "--all-targets --all-features -- -D warnings -Dclippy::all -D clippy::pedantic -D clippy::cargo -A clippy::multiple-crate-versions"
-      - name: Prettify code
+      - name: Check formatting of yaml
         uses: creyD/prettier_action@v3.0
         with:
-          # This part is also where you can pass other options, for example:
           prettier_options: --check **/*.{yml,yaml}
   merge-and-push:
     if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'Update cargo package version to v')
@@ -135,10 +157,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
         with:
           token: "${{ secrets.COMMITTER_TOKEN }}"
           fetch-depth: 0
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           path: |
             ~/.cargo/registry
@@ -147,17 +171,21 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/download-artifact@v2
+        name: Download stored version
       - id: get_current_version
+        name: Remove v from version
         run: |
           echo ::set-output name=VERSION::$(cat ./version/version | cut -c2-)
           echo ::set-output name=V_VERSION::$(cat ./version/version)
         shell: bash
       - uses: ciiiii/toml-editor@1.0.0
+        name: Set the version in the cargo package file
         with:
           file: "Cargo.toml"
           key: "package.version"
           value: ${{ steps.get_current_version.outputs.VERSION }}
       - uses: actions-rs/cargo@v1
+        name: Update cargo lock file with new version
         with:
           command: check
       - name: Import GPG key
@@ -171,6 +199,7 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.SIGNING_KEY_PRIV }}
           PASSPHRASE: ${{ secrets.SIGNING_KEY_PASS }}
       - shell: bash
+        name: Commit new version, tag and push
         env:
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
@@ -180,7 +209,7 @@ jobs:
 
           git checkout -b "release-$(cat ./version/version)"
           git push -f origin "release-$(cat ./version/version)"
-      - name: pull-request
+      - name: Create pull request for release
         uses: repo-sync/pull-request@v2
         with:
           github_token: "${{ secrets.COMMITTER_TOKEN }}"
