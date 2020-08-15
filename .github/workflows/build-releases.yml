@@ -1,3 +1,4 @@
+name: Update GitHub releases
 "on":
   push:
     tags:
