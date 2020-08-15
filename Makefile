@@ -11,7 +11,7 @@ show-help:
 .PHONY: test
 ## Test it was built ok
 test:
-	UST_BACKTRACE=1 cargo test --locked
+	UST_BACKTRACE=1 cargo test
 
 .PHONY: specdown
 ## Test the markdown in the docs directory
@@ -21,23 +21,23 @@ specdown: build
 .PHONY: bench
 ## Benchmark
 bench:
-	cargo bench --locked
+	cargo bench
 
 .PHONY: smoke-test
 ## Run a smoke test and see if the app runs
 smoke-test: build
-	cargo run --locked --bin git-mit -- -h
-	cargo run --locked --bin git-mit-config -- -h
-	cargo run --locked --bin git-mit-relates-to -- -h
-	cargo run --locked --bin git-mit-install -- -h
-	cargo run --locked --bin mit-commit-msg -- -h
-	cargo run --locked --bin mit-pre-commit -- -h
-	cargo run --locked --bin mit-prepare-commit-msg -- -h
+	cargo run --bin git-mit -- -h
+	cargo run --bin git-mit-config -- -h
+	cargo run --bin git-mit-relates-to -- -h
+	cargo run --bin git-mit-install -- -h
+	cargo run --bin mit-commit-msg -- -h
+	cargo run --bin mit-pre-commit -- -h
+	cargo run --bin mit-prepare-commit-msg -- -h
 
 .PHONY: build
 ## Build release version
 build:
-	cargo build --locked --release
+	cargo build --release
 
 .PHONY: lint
 ## Lint it
