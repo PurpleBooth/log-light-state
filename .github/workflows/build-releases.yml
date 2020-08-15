@@ -7,12 +7,15 @@ jobs:
     runs-on: "${{ matrix.os }}"
     steps:
       - run: ${{ matrix.install }}
+        name: Install dependencies
         env:
           DEBIAN_FRONTEND: noninteractive
       - uses: actions/checkout@v2.3.2
+        name: Checkout code
         with:
           lfs: true
       - uses: actions/cache@v2
+        name: Cache cargo packages
         with:
           key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
           path: |
@@ -21,13 +24,16 @@ jobs:
             ~/.cargo/bin
             target
       - uses: actions-rs/cargo@v1
+        name: Build release version of binary
         with:
           args: "--release"
           command: build
       - id: get_repository_name
+        name: Calculate repository name
         run: 'echo ::set-output name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / ''{print $2}'' | sed -e "s/:refs//")'
         shell: bash
       - uses: actions/upload-artifact@v2
+        name: Store release binary
         with:
           name: log-light-state-${{ matrix.target }}
           path: ./target/release/log-light-state${{ matrix.suffix }}
@@ -48,10 +54,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
+        name: Checkout repository
         with:
           lfs: true
           fetch-depth: 0
       - uses: actions/cache@v2
+        name: Cache cargo
         with:
           key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
           path: |
@@ -60,32 +68,40 @@ jobs:
             ~/.cargo/bin
             target
       - uses: actions/download-artifact@v2
+        name: Download stored binaries
       - uses: actions-rs/cargo@v1
+        name: Generate changelog
         with:
           command: install
           args: clog-cli
       - id: get_previous_version
+        name: Calculate previous version
         run: echo ::set-output name=PREVIOUS_VERSION::$(git tag | sort --version-sort | tail -n 2 | head -n 1)
         shell: bash
       - uses: actions-rs/cargo@v1
+        name: Install cargo.toml editor
         with:
           args: toml-cli
           command: install
       - id: get_repository_name
+        name: Calculate the repository name
         run: 'echo ::set-output name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / ''{print $2}'' | sed -e "s/:refs//")'
         shell: bash
       - id: get_version
+        name: Calculate the current version
         run: "echo ::set-output name=VERSION::v$(toml get Cargo.toml package.version | tail -c +2 | head -c -2)"
         shell: bash
       - run: |
           clog --from "$PREVIOUS_VERSION" --to "$VERSION" > CHANGELOG.md
         shell: bash
+        name: Generate the changelog
         env:
           PREVIOUS_VERSION: "${{ steps.get_previous_version.outputs.PREVIOUS_VERSION }}"
           VERSION: "${{ steps.get_version.outputs.VERSION }}"
       - env:
           GITHUB_TOKEN: "${{ secrets.COMMITTER_TOKEN }}"
         id: create_release
+        name: Create a release on GitHub
         uses: actions/create-release@v1.1.3
         with:
           draft: false
@@ -94,6 +110,7 @@ jobs:
           release_name: "Release ${{ steps.get_version.outputs.VERSION }}"
           tag_name: "${{ steps.get_version.outputs.VERSION }}"
       - uses: actions/upload-release-asset@v1.0.2
+        name: Upload linux version
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
@@ -102,6 +119,7 @@ jobs:
           asset_name: log-light-state-x86_64-unknown-linux-gnu
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.2
+        name: Upload mac version
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
