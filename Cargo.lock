@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "log-light-state"
-version = "1.0.25"
+version = "1.0.26"
 dependencies = [
  "chrono",
  "clap",
