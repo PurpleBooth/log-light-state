@@ -103,7 +103,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.COMMITTER_TOKEN }}"
         id: create_release
         name: Create a release on GitHub
-        uses: actions/create-release@v1.1.3
+        uses: actions/create-release@v1.1.4
         with:
           draft: false
           prerelease: false
