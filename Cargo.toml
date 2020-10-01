@@ -13,7 +13,7 @@ description = "log-light-state is a tool to generate a CSV of all your hue light
 
 [dependencies]
 hueclient = "0.3.9"
-chrono = "0.4.18"
+chrono = "0.4.19"
 clap = "2.33.3"
 indicatif = "0.15.0"
 spa = "0.2.0"
