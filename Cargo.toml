@@ -20,7 +20,7 @@ spa = "0.2.0"
 reqwest = "0.10.8"
 serde_json = "1.0.59"
 csv = "1.1.4"
-url = "2.1.1"
+url = "2.2.0"
 
   [dependencies.serde]
   version = "1.0.117"
