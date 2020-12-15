@@ -12,7 +12,7 @@ repository = "git@github.com:PurpleBooth/log-light-state.git"
 description = "log-light-state is a tool to generate a CSV of all your hue light states every minuit. The intention is that you'd use that log for training neural networks and similar."
 
 [dependencies]
-hueclient = "0.3.9"
+hueclient = "0.3.10"
 chrono = "0.4.19"
 clap = "2.33.3"
 indicatif = "0.15.0"
