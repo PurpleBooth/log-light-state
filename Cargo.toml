@@ -26,5 +26,5 @@ url = "2.2.1"
   features = [ "blocking", "json" ]
 
   [dependencies.serde]
-  version = "1.0.123"
+  version = "1.0.124"
   features = [ "derive" ]
