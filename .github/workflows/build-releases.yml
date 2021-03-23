@@ -15,7 +15,7 @@ jobs:
         name: Checkout code
         with:
           lfs: true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.4
         name: Cache cargo packages
         with:
           key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
@@ -59,7 +59,7 @@ jobs:
         with:
           lfs: true
           fetch-depth: 0
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.4
         name: Cache cargo
         with:
           key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
